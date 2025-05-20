@@ -23,9 +23,10 @@ except:
 #
 #####################################################################################################################
 class Environment:
-    def __init__(self, env_name, sticky_action_prob=0.1,
+    def __init__(self, env_name, sticky_action_prob=0.0,
                 difficulty_ramping=True):
         env_module = import_module('minatar.environments.' + env_name)
+        np.random.seed(0)
         self.random = np.random.RandomState()
         self.env_name = env_name
         self.env = env_module.Env(ramping=difficulty_ramping)
@@ -38,7 +39,9 @@ class Environment:
     # Seeding numpy random for reproducibility
     def seed(self, seed=None):
         if seed is not None:
+
             self.random = np.random.RandomState(seed)
+            np.random.seed(0)
             self.env.random = self.random
 
     # Wrapper for env.act

@@ -35,6 +35,7 @@ class Env:
         }
         self.action_map = ['n','l','u','r','d','f']
         self.ramping = ramping
+        np.random.seed(0)
         self.random = np.random.RandomState()
         self.reset()
 
@@ -134,6 +135,7 @@ class Env:
 
     # Reset to start state for new episode
     def reset(self):
+        np.random.seed(0)
         self.player_x = 5
         self.player_y = 5
         self.entities = [None]*8
