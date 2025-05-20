@@ -40,6 +40,7 @@ class Env:
         }
         self.action_map = ['n','l','u','r','d','f']
         self.ramping = ramping
+        np.random.seed(0)
         self.random = np.random.RandomState()
         self.reset()
 
