@@ -26,7 +26,7 @@ shot_cool_down = 5
 #
 #####################################################################################################################
 class Env:
-    def __init__(self, ramping=True):
+    def __init__(self, ramping=False):
         self.channels ={
             'player':0,
             'enemy':1,
@@ -136,6 +136,7 @@ class Env:
     # Reset to start state for new episode
     def reset(self):
         np.random.seed(0)
+        self.random = np.random.RandomState()
         self.player_x = 5
         self.player_y = 5
         self.entities = [None]*8

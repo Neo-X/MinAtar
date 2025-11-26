@@ -40,8 +40,8 @@ class Environment:
     def seed(self, seed=None):
         if seed is not None:
 
-            self.random = np.random.RandomState(seed)
             np.random.seed(0)
+            self.random = np.random.RandomState()
             self.env.random = self.random
 
     # Wrapper for env.act
