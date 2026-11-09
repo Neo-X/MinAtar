@@ -39,8 +39,7 @@ class Env:
             'speed5':6,
         }
         self.action_map = ['n','l','u','r','d','f']
-        np.random.seed(0)
-        self.random = np.random.RandomState()
+        self.random = np.random.RandomState(0)
         self.reset()
 
     # Update environment according to agent action
@@ -117,8 +116,6 @@ class Env:
 
     # Randomize car speeds and directions, also reset their position if initialize=True
     def _randomize_cars(self, initialize=False):
-        np.random.seed(0)
-        self.random = np.random.RandomState()
         speeds = self.random.randint(1,6,8)
         directions = np.sign(self.random.rand(8) - 0.5).astype(int)
         speeds*=directions

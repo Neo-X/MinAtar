@@ -26,8 +26,11 @@ class Environment:
     def __init__(self, env_name, sticky_action_prob=0.0,
                 difficulty_ramping=True):
         env_module = import_module('minatar.environments.' + env_name)
-        np.random.seed(0)
-        self.random = np.random.RandomState()
+        # Deterministic: every reset restarts the game RNG from self._seed (see reset()),
+        # so a seeded reset always gives the same initial conditions and dynamics, and
+        # replaying an action sequence reproduces its return. numpy's global RNG is never touched.
+        self._seed = 0
+        self.random = np.random.RandomState(self._seed)
         self.env_name = env_name
         self.env = env_module.Env(ramping=difficulty_ramping)
         self.n_channels = self.env.state_shape()[2]
@@ -36,13 +39,12 @@ class Environment:
         self.visualized = False
         self.closed = False
 
-    # Seeding numpy random for reproducibility
+    # Seed the game RNG (used by sticky actions and the game's own randomness)
     def seed(self, seed=None):
         if seed is not None:
-
-            np.random.seed(0)
-            self.random = np.random.RandomState()
-            self.env.random = self.random
+            self._seed = int(seed)
+        self.random = np.random.RandomState(self._seed)
+        self.env.random = self.random
 
     # Wrapper for env.act
     def act(self, a):
@@ -55,8 +57,11 @@ class Environment:
     def state(self):
         return self.env.state()
 
-    # Wrapper for env.reset
+    # Wrapper for env.reset: reseed so every episode starts from identical conditions
     def reset(self):
+        self.random = np.random.RandomState(self._seed)
+        self.env.random = self.random
+        self.last_action = 0
         return self.env.reset()
 
     # Wrapper for env.state_shape
